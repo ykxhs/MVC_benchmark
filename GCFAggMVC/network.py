@@ -49,7 +49,8 @@ class GCFAggMVC(nn.Module):
             nn.Linear(low_feature_dim*view, high_feature_dim),
         )
         self.view = view
-        self.TransformerEncoderLayer = nn.TransformerEncoderLayer(d_model=low_feature_dim*view, nhead=1, dim_feedforward=256)
+        # isGetS 是修改了源码 ture就会返回S 默认false和原始源码一致
+        self.TransformerEncoderLayer = nn.TransformerEncoderLayer(d_model=low_feature_dim*view, nhead=1, dim_feedforward=256, isGetS = True)
         self.TransformerEncoder = nn.TransformerEncoder(self.TransformerEncoderLayer, num_layers=1)
     def forward(self, xs):
         xrs = []

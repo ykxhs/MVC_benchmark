@@ -22,7 +22,7 @@ SERVERDATAPATH = "D:/cyy/dataset/MVC_data/"
 # Caltech-3V
 # Caltech-4V
 # Caltech-5V
-Dataname = 'Caltech-4V'
+Dataname = 'MNIST-USPS'
 parser = argparse.ArgumentParser(description='train')
 parser.add_argument('--dataset', default=Dataname)
 parser.add_argument('--batch_size', default=256, type=int)
@@ -231,9 +231,9 @@ for i in range(T):
         fine_tuning(epoch, new_pseudo_label)
         if epoch == args.mse_epochs + args.con_epochs + args.tune_epochs:
             acc, nmi, pur = valid(model, device, dataset, view, data_size, class_num, eval_h=False)
-            state = model.state_dict()
-            torch.save(state, './models/' + args.dataset + '.pth')
-            print('Saving..')
+            # state = model.state_dict()
+            # torch.save(state, './models/' + args.dataset + '.pth')
+            # print('Saving..')
             accs.append(acc)
             nmis.append(nmi)
             purs.append(pur)

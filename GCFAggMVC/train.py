@@ -9,6 +9,8 @@ from loss import Loss
 from dataloader import load_data
 import os
 # os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+SERVERDATAPATH = "D:/cyy/dataset/MVC_data/"
+
 # Synthetic3d
 # Prokaryotic
 # CCV
@@ -21,7 +23,7 @@ import os
 # Caltech-3V
 # Caltech-4V
 # Caltech-5V
-Dataname = 'Hdigit'
+Dataname = 'BDGP'
 parser = argparse.ArgumentParser(description='train')
 parser.add_argument('--dataset', default=Dataname)
 parser.add_argument('--batch_size', default=256, type=int)
@@ -29,7 +31,7 @@ parser.add_argument("--temperature_f", default=0.5)
 parser.add_argument("--learning_rate", default=0.0003)
 parser.add_argument("--weight_decay", default=0.)
 parser.add_argument("--workers", default=8)
-parser.add_argument("--rec_epochs", default=200)
+parser.add_argument("--rec_epochs", default=100)
 parser.add_argument("--fine_tune_epochs", default=100)
 parser.add_argument("--low_feature_dim", default=512)
 parser.add_argument("--high_feature_dim", default=128)
@@ -39,6 +41,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 if args.dataset == "MNIST-USPS":
     args.fine_tune_epochs = 100
     seed = 10
+if args.dataset == "BDGP":
+    args.fine_tune_epochs = 50
+    seed = 5
 if args.dataset == "CCV":
     args.fine_tune_epochs = 100
     seed = 3
@@ -81,7 +86,8 @@ def setup_seed(seed):
 
 setup_seed(seed)
 
-dataset, dims, view, data_size, class_num = load_data(args.dataset)
+dataset, dims, view, data_size, class_num = load_data(args.dataset,SERVERDATAPATH)
+
 
 data_loader = torch.utils.data.DataLoader(
         dataset,
@@ -141,7 +147,7 @@ while epoch <= args.rec_epochs + args.fine_tune_epochs:
     fine_tune(epoch)
     if epoch == args.rec_epochs + args.fine_tune_epochs:
         valid(model, device, dataset, view, data_size, class_num)
-        state = model.state_dict()
-        torch.save(state, './models/' + args.dataset + '.pth')
-        print('Saving model...')
+        # state = model.state_dict()
+        # torch.save(state, './models/' + args.dataset + '.pth')
+        # print('Saving model...')
     epoch += 1
